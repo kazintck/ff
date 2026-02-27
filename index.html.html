@@ -1,0 +1,202 @@
+  <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFH4X Panel (DEMO)</title>
+<style>
+:root{
+  --bg:#0b0f14;
+  --card:#111826;
+  --accent:#22e6a8;
+  --accent2:#5b7cfa;
+  --danger:#ff4d4f;
+  --muted:#8aa0b6;
+  --text:#e8f0ff;
+  --glow:0 0 18px rgba(34,230,168,.35);
+}
+*{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto}
+body{
+  margin:0; background:radial-gradient(1200px 600px at 20% -10%, #16223a 0%, transparent 40%),
+  radial-gradient(800px 500px at 100% 0%, #0e3a2a 0%, transparent 40%), var(--bg);
+  color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center;
+}
+.panel{
+  width:360px; max-width:92vw; background:linear-gradient(180deg,#0f1624,#0b1220);
+  border-radius:18px; box-shadow:0 30px 80px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.05);
+  overflow:hidden; position:relative;
+}
+.header{
+  padding:14px 16px; display:flex; align-items:center; justify-content:space-between;
+  background:linear-gradient(180deg,#0f1a2f,#0d1626);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.brand{font-weight:800; letter-spacing:.5px}
+.badge{font-size:11px; color:#0b1220; background:linear-gradient(90deg,var(--accent),var(--accent2));
+  padding:4px 8px; border-radius:999px; box-shadow:var(--glow)}
+.body{padding:14px 16px}
+.section{margin-bottom:14px}
+.section h4{margin:0 0 8px 0; font-size:12px; color:var(--muted); letter-spacing:.4px}
+.row{display:flex; gap:10px; align-items:center}
+.btn{
+  flex:1; border:0; border-radius:12px; padding:12px 10px; cursor:pointer; color:#06140f;
+  background:linear-gradient(90deg,var(--accent),#7ef0c9); font-weight:700;
+  box-shadow:var(--glow); transition:.2s transform,.2s filter;
+}
+.btn.secondary{background:linear-gradient(90deg,#2a3552,#1b2743); color:var(--text); box-shadow:none}
+.btn.danger{background:linear-gradient(90deg,#ff6b6d,#ff3d40); color:#2b0707}
+.btn:active{transform:translateY(1px); filter:brightness(.95)}
+.toggle{
+  background:var(--card); border-radius:12px; padding:10px; display:flex; justify-content:space-between;
+  align-items:center; border:1px solid rgba(255,255,255,.06)
+}
+.switch{position:relative; width:44px; height:24px}
+.switch input{display:none}
+.slider{
+  position:absolute; inset:0; background:#1c2640; border-radius:999px; transition:.2s
+}
+.slider:before{
+  content:""; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#cfe7ff;
+  border-radius:50%; transition:.2s
+}
+.switch input:checked + .slider{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.switch input:checked + .slider:before{transform:translateX(20px)}
+.range{
+  background:var(--card); border-radius:12px; padding:10px; border:1px solid rgba(255,255,255,.06)
+}
+.range label{font-size:12px; color:var(--muted)}
+.range input{width:100%}
+.status{
+  margin-top:8px; background:#0a1326; border:1px dashed rgba(255,255,255,.15);
+  border-radius:10px; padding:10px; font-size:12px; color:#cfe7ff
+}
+.progress{
+  height:8px; background:#1a2545; border-radius:999px; overflow:hidden; margin-top:8px
+}
+.bar{
+  height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent2));
+  box-shadow:var(--glow); transition:width .2s
+}
+.footer{
+  padding:10px 16px; display:flex; justify-content:space-between; align-items:center;
+  background:#0b1220; border-top:1px solid rgba(255,255,255,.06)
+}
+.muted{color:var(--muted); font-size:11px}
+.hide{
+  position:absolute; right:10px; bottom:10px; background:#0a1326; border:1px solid rgba(255,255,255,.15);
+  color:var(--text); border-radius:10px; padding:8px 10px; cursor:pointer
+}
+.toast{
+  position:absolute; left:50%; top:10px; transform:translateX(-50%);
+  background:#0a1326; border:1px solid rgba(255,255,255,.2);
+  padding:8px 12px; border-radius:10px; font-size:12px; display:none
+}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="panel" id="panel">
+  <div class="toast" id="toast">Status resetado</div>
+  <div class="header">
+    <div class="brand">FFH4X</div>
+    <div class="badge">DEMO</div>
+  </div>
+
+  <div class="body">
+    <div class="section">
+      <div class="row">
+        <button class="btn secondary" id="btnStart">Iniciar</button>
+        <button class="btn" id="btnInject">Injetar</button>
+      </div>
+      <div class="status" id="status">Aguardando ação…</div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+    </div>
+
+    <div class="section">
+      <h4>LOCKS</h4>
+      <div class="toggle">
+        <span>Headlock</span>
+        <label class="switch"><input type="checkbox" class="reset"><span class="slider"></span></label>
+      </div>
+      <div class="toggle" style="margin-top:8px">
+        <span>Necklock</span>
+        <label class="switch"><input type="checkbox" class="reset"><span class="slider"></span></label>
+      </div>
+      <div class="toggle" style="margin-top:8px">
+        <span>Chestlock</span>
+        <label class="switch"><input type="checkbox" class="reset"><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="section">
+      <h4>AJUSTES</h4>
+      <div class="range">
+        <label>Cabeça</label>
+        <input type="range" min="0" max="100" value="50" class="reset">
+      </div>
+      <div class="range" style="margin-top:8px">
+        <label>Pescoço</label>
+        <input type="range" min="0" max="100" value="50" class="reset">
+      </div>
+      <div class="range" style="margin-top:8px">
+        <label>Peito</label>
+        <input type="range" min="0" max="100" value="50" class="reset">
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="muted">Painel visual para vídeos</span>
+    <button class="btn danger" id="btnReset">Reset</button>
+  </div>
+
+  <button class="hide" id="btnHide">Esconder</button>
+</div>
+
+<script>
+const statusEl = document.getElementById('status');
+const bar = document.getElementById('bar');
+const toast = document.getElementById('toast');
+const resets = document.querySelectorAll('.reset');
+
+function showToast(msg){
+  toast.textContent = msg;
+  toast.style.display='block';
+  setTimeout(()=>toast.style.display='none',1200);
+}
+function resetStatus(){
+  bar.style.width='0%';
+  statusEl.textContent='Status resetado.';
+  showToast('Status resetado');
+}
+resets.forEach(el=>{
+  el.addEventListener('input', resetStatus);
+  el.addEventListener('change', resetStatus);
+});
+
+document.getElementById('btnStart').onclick=()=>{
+  statusEl.textContent='Iniciando aplicativo… (simulação)';
+  bar.style.width='25%';
+};
+
+document.getElementById('btnInject').onclick=async()=>{
+  statusEl.textContent='Injetando códigos…';
+  bar.style.width='10%';
+  await new Promise(r=>setTimeout(r,600));
+  bar.style.width='45%';
+  await new Promise(r=>setTimeout(r,600));
+  bar.style.width='75%';
+  await new Promise(r=>setTimeout(r,600));
+  bar.style.width='100%';
+  statusEl.textContent='Códigos injetados com sucesso ✔ (DEMO)';
+};
+
+document.getElementById('btnReset').onclick=resetStatus;
+
+document.getElementById('btnHide').onclick=()=>{
+  const p=document.getElementById('panel');
+  p.classList.toggle('hidden');
+};
+</script>
+</body>
+</html>
